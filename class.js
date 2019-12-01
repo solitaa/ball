@@ -4,19 +4,21 @@ class Animate {
 		this.playPauseElem = document.getElementById("play_pause");
 
 		this.state;
-		this.maxHeight = 500;
+		this.height = 200;
+		this.initialHeight = this.height;
+
+		this.distance = 300;
 		this.v = 0;
 		this.v0 = 0;
-		this.gravity = 10;
-		this.deltaTime = 0.2;
-		this.allTime = 2;
+		this.deltaTime = 0.1;
+		this.timeInAir = 1;
 
 		this.interval;
 	}
 
 	init() {
-		this.height = 200;
-		this.maxSpeed = Math.sqrt((this.maxHeight - this.height) * 2 * this.gravity);
+		this.gravity = Math.sqrt(this.distance * 2 / (this.timeInAir * this.timeInAir));
+		this.maxSpeed = Math.sqrt(this.distance * 2 * this.gravity);
 	}
 
 	step() {
@@ -24,9 +26,9 @@ class Animate {
 		this.v = this.v0 - this.gravity * this.deltaTime;
 		this.height -=  this.v0 * this.deltaTime - this.gravity * this.deltaTime * this.deltaTime / 2;
 
-		if(this.height >= this.maxHeight)
+		if(this.height >= this.initialHeight + this.distance)
 		{
-			this.height = this.maxHeight;
+			this.height = this.initialHeight + this.distance;
 			this.v = this.maxSpeed;
 		}
 
@@ -55,8 +57,7 @@ class Animate {
 	play() {
 		this.interval = setInterval(() => {
 			this.step();
-			// this.stop();
-		}, this.deltaTime * 100);
+		}, this.timeInAir / this.deltaTime);
 		this.playPauseElem.innerHTML = "Pause";
 		this.state = "running";
 	}
